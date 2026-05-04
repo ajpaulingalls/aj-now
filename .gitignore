@@ -8,3 +8,8 @@ build/
 .turbo/
 .claude/
 .idea/
+.expo/
+ios/build/
+android/build/
+*.tsbuildinfo
+coverage/

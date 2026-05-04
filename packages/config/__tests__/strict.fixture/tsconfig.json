@@ -1,0 +1,7 @@
+{
+  "extends": "@aj-now/config/tsconfig.base",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["probe.ts"]
+}

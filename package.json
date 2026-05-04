@@ -1,0 +1,24 @@
+{
+  "name": "aj-now",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "bun@1.3.13",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun --filter './apps/*' dev",
+    "typecheck": "bun --filter '*' typecheck",
+    "lint": "bun --filter '*' lint",
+    "test": "bun --filter '*' test",
+    "db:migrate": "bun --filter @aj-now/db migrate",
+    "db:seed": "bun run scripts/seed.ts",
+    "db:generate": "bun --filter @aj-now/db generate"
+  },
+  "devDependencies": {
+    "@aj-now/config": "workspace:*",
+    "typescript": "^5.7.2"
+  }
+}
