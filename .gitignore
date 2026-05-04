@@ -1,9 +1,8 @@
 node_modules/
-.DS_Store
 .env
 .env.local
+*.log
+.DS_Store
 dist/
 build/
-.expo/
 .turbo/
-*.log
