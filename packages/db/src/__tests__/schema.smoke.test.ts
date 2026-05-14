@@ -3,6 +3,7 @@ import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testconta
 import { createClient, type DbClient } from '../client';
 import { runMigrations } from '../migrate';
 import { reporters } from '../schema/reporters';
+import { media_assets } from '../schema/media';
 
 describe('@aj-now/db schema smoke', () => {
   let container: StartedPostgreSqlContainer;
@@ -47,5 +48,29 @@ describe('@aj-now/db schema smoke', () => {
     const all = await client.db.select().from(reporters);
     expect(all).toHaveLength(1);
     expect(all[0]!.full_name).toBe('Alice Reporter');
+  });
+
+  it('rejects duplicate client_uuid in media_assets', async () => {
+    const [reporter] = await client.db
+      .insert(reporters)
+      .values({ email: 'bob@example.com', full_name: 'Bob' })
+      .returning();
+    const sameClientUuid = '11111111-1111-1111-1111-111111111111';
+    await client.db.insert(media_assets).values({
+      reporter_id: reporter!.id,
+      kind: 'image',
+      mime_type: 'image/jpeg',
+      capture_at: new Date(),
+      client_uuid: sameClientUuid,
+    });
+    await expect(
+      client.db.insert(media_assets).values({
+        reporter_id: reporter!.id,
+        kind: 'image',
+        mime_type: 'image/jpeg',
+        capture_at: new Date(),
+        client_uuid: sameClientUuid,
+      }),
+    ).rejects.toMatchObject({ code: '23505' });
   });
 });

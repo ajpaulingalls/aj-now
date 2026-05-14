@@ -4,9 +4,6 @@ import { createdAt, primaryId } from './columns';
 import { reporters } from './reporters';
 import { stories } from './stories';
 
-// NOTE: client_uuid intentionally lacks .unique() in the v0 baseline migration.
-// Story-002 commit 2 adds the unique constraint via a 0001 append-only migration,
-// driven by a true RED→GREEN cycle on the duplicate-insert assertion.
 export const media_assets = pgTable('media_assets', {
   id: primaryId(),
   reporter_id: uuid('reporter_id').references(() => reporters.id),
@@ -22,6 +19,6 @@ export const media_assets = pgTable('media_assets', {
   gps_accuracy_m: doublePrecision('gps_accuracy_m'),
   storage_key: text('storage_key'),
   upload_status: text('upload_status').notNull().default('pending'),
-  client_uuid: uuid('client_uuid').notNull(),
+  client_uuid: uuid('client_uuid').notNull().unique(),
   created_at: createdAt(),
 });
