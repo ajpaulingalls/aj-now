@@ -5,6 +5,8 @@
   "type": "module",
   "exports": {
     "./tsconfig.base": "./tsconfig.base.json",
+    "./tsconfig.lib": "./tsconfig.lib.json",
+    "./tsconfig.app": "./tsconfig.app.json",
     "./eslint": "./eslint.config.js",
     "./prettier": "./prettier.config.js"
   },
