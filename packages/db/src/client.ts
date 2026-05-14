@@ -5,10 +5,15 @@ import * as schema from './schema/index';
 export type DbClient = {
   db: PostgresJsDatabase<typeof schema>;
   sql: Sql;
+  close: () => Promise<void>;
 };
 
 export function createClient(databaseUrl: string): DbClient {
   const sql = postgres(databaseUrl);
   const db = drizzle(sql, { schema });
-  return { db, sql };
+  return {
+    db,
+    sql,
+    close: () => sql.end({ timeout: 5 }),
+  };
 }

@@ -13,10 +13,10 @@ describe('@aj-now/db schema smoke', () => {
     container = await new PostgreSqlContainer('postgres:16').start();
     client = createClient(container.getConnectionUri());
     await runMigrations(container.getConnectionUri());
-  }, 60_000);
+  });
 
   afterAll(async () => {
-    await client.sql.end({ timeout: 5 });
+    await client.close();
     await container.stop();
   });
 
