@@ -52,6 +52,15 @@
         "vitest": "^2.1.8",
       },
     },
+    "packages/ui-tokens": {
+      "name": "@aj-now/ui-tokens",
+      "version": "0.0.0",
+      "devDependencies": {
+        "@aj-now/config": "workspace:*",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8",
+      },
+    },
   },
   "packages": {
     "@aj-now/auth": ["@aj-now/auth@workspace:packages/auth"],
@@ -59,6 +68,8 @@
     "@aj-now/config": ["@aj-now/config@workspace:packages/config"],
 
     "@aj-now/db": ["@aj-now/db@workspace:packages/db"],
+
+    "@aj-now/ui-tokens": ["@aj-now/ui-tokens@workspace:packages/ui-tokens"],
 
     "@balena/dockerignore": ["@balena/dockerignore@1.0.2", "", {}, "sha512-wMue2Sy4GAVTk6Ic4tJVcnfdau+gx2EnG7S+uAEe+TWJFqE4YoWN4/H8MSLj4eYJKxGg26lZwboEniNiNwZQ6Q=="],
 
