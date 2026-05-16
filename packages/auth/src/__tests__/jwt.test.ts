@@ -69,4 +69,25 @@ describe('@aj-now/auth jwt', () => {
     expect(typeof verified.iat).toBe('number');
     expect(typeof verified.exp).toBe('number');
   });
+
+  it('rejects a refresh token whose payload has been tampered', async () => {
+    const claim = { sub: 'reporter-uuid-5', jti: 'token-id-2' };
+    const token = await signRefreshToken(claim, privateKey);
+    const parts = token.split('.');
+    if (parts.length !== 3) throw new Error('unexpected JWT format');
+    const [header, payload, signature] = parts as [string, string, string];
+    const decoded = JSON.parse(Buffer.from(payload, 'base64url').toString());
+    decoded.sub = 'reporter-uuid-attacker';
+    const tamperedPayload = Buffer.from(JSON.stringify(decoded)).toString('base64url').replace(/=+$/, '');
+    const tamperedToken = `${header}.${tamperedPayload}.${signature}`;
+    await expect(verifyRefreshToken(tamperedToken, publicKey)).rejects.toBeInstanceOf(
+      errors.JWSSignatureVerificationFailed,
+    );
+  });
+
+  it('rejects an expired refresh token', async () => {
+    const claim = { sub: 'reporter-uuid-6', jti: 'token-id-3' };
+    const token = await signRefreshToken(claim, privateKey, { expiresIn: '-1s' });
+    await expect(verifyRefreshToken(token, publicKey)).rejects.toBeInstanceOf(errors.JWTExpired);
+  });
 });
