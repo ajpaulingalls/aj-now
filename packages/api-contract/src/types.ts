@@ -47,3 +47,14 @@ export const AuthLogoutSchema = z.object({
   refresh_token: z.string().min(1),
 });
 export type AuthLogout = z.infer<typeof AuthLogoutSchema>;
+
+export const HealthzResponseSchema = z.object({
+  ok: z.literal(true),
+});
+export type HealthzResponse = z.infer<typeof HealthzResponseSchema>;
+
+// .strict() rejects unknown keys so a typo like `preferreed_lang` fails loudly
+// instead of silently dropping the field. Value-level validation (preferred_lang
+// enum, array trim/max-20) is endpoint policy per decision api-wire-casing.
+export const ReporterPatchSchema = ReporterSchema.partial().strict();
+export type ReporterPatch = z.infer<typeof ReporterPatchSchema>;

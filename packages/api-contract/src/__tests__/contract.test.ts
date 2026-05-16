@@ -11,6 +11,8 @@ import {
   AuthLogoutSchema,
   AuthRefreshResponseSchema,
   AuthRefreshSchema,
+  HealthzResponseSchema,
+  ReporterPatchSchema,
   ReporterSchema,
 } from '../types';
 
@@ -140,5 +142,28 @@ describe('Auth endpoint schemas', () => {
     expect(AuthLogoutSchema.safeParse({ refresh_token: 'rt' }).success).toBe(true);
     expect(AuthLogoutSchema.safeParse({}).success).toBe(false);
     expect(AuthLogoutSchema.safeParse({ refresh_token: '' }).success).toBe(false);
+  });
+});
+
+describe('/v1/me and /healthz schemas', () => {
+  it('HealthzResponseSchema accepts {ok: true}, rejects {ok: false}', () => {
+    expect(HealthzResponseSchema.safeParse({ ok: true }).success).toBe(true);
+    expect(HealthzResponseSchema.safeParse({ ok: false }).success).toBe(false);
+    expect(HealthzResponseSchema.safeParse({}).success).toBe(false);
+  });
+
+  it('ReporterPatchSchema accepts empty object (no fields to update)', () => {
+    expect(ReporterPatchSchema.safeParse({}).success).toBe(true);
+  });
+
+  it('ReporterPatchSchema accepts a single-field patch', () => {
+    expect(ReporterPatchSchema.safeParse({ full_name: 'New Name' }).success).toBe(true);
+    expect(ReporterPatchSchema.safeParse({ preferred_lang: 'ar' }).success).toBe(true);
+  });
+
+  it('ReporterPatchSchema rejects unknown keys (typo-safe by default)', () => {
+    expect(
+      ReporterPatchSchema.safeParse({ preferreed_lang: 'ar' }).success,
+    ).toBe(false);
   });
 });
