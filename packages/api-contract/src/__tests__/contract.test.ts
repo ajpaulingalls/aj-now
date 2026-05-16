@@ -3,7 +3,28 @@ import { describe, expect, expectTypeOf, it } from 'vitest';
 
 import * as api from '../index';
 import { ROUTES, type RoutePath } from '../routes';
-import { ReporterSchema } from '../types';
+import {
+  AuthCodeAckSchema,
+  AuthCodeRequestSchema,
+  AuthCodeVerifyResponseSchema,
+  AuthCodeVerifySchema,
+  AuthLogoutSchema,
+  AuthRefreshResponseSchema,
+  AuthRefreshSchema,
+  ReporterSchema,
+} from '../types';
+
+const validReporter = {
+  id: '11111111-1111-1111-1111-111111111111',
+  email: 'reporter@example.com',
+  full_name: 'Test Reporter',
+  preferred_lang: 'en',
+  skills: [],
+  languages: [],
+  expertise: [],
+  created_at: new Date('2026-01-01T00:00:00Z'),
+  updated_at: new Date('2026-01-01T00:00:00Z'),
+};
 
 describe('@aj-now/api-contract package surface', () => {
   it('barrel re-exports the routes module', () => {
@@ -60,18 +81,7 @@ describe('ReporterSchema (no-drift contract with @aj-now/db)', () => {
   });
 
   it('parses a valid snake_case reporter payload', () => {
-    const payload = {
-      id: '11111111-1111-1111-1111-111111111111',
-      email: 'reporter@example.com',
-      full_name: 'Test Reporter',
-      preferred_lang: 'en',
-      skills: [],
-      languages: [],
-      expertise: [],
-      created_at: new Date('2026-01-01T00:00:00Z'),
-      updated_at: new Date('2026-01-01T00:00:00Z'),
-    };
-    expect(ReporterSchema.safeParse(payload).success).toBe(true);
+    expect(ReporterSchema.safeParse(validReporter).success).toBe(true);
   });
 
   it('rejects a reporter payload missing a required column', () => {
@@ -80,5 +90,55 @@ describe('ReporterSchema (no-drift contract with @aj-now/db)', () => {
       email: 'reporter@example.com',
     };
     expect(ReporterSchema.safeParse(incomplete).success).toBe(false);
+  });
+});
+
+describe('Auth endpoint schemas', () => {
+  it('AuthCodeRequestSchema accepts a valid email, rejects malformed', () => {
+    expect(AuthCodeRequestSchema.safeParse({ email: 'a@b.com' }).success).toBe(true);
+    expect(AuthCodeRequestSchema.safeParse({ email: 'not-an-email' }).success).toBe(false);
+  });
+
+  it('AuthCodeAckSchema requires ok:true; dev_code optional', () => {
+    expect(AuthCodeAckSchema.safeParse({ ok: true }).success).toBe(true);
+    expect(AuthCodeAckSchema.safeParse({ ok: true, dev_code: '123456' }).success).toBe(true);
+    expect(AuthCodeAckSchema.safeParse({ ok: false }).success).toBe(false);
+  });
+
+  it('AuthCodeVerifySchema requires email and non-empty code', () => {
+    expect(
+      AuthCodeVerifySchema.safeParse({ email: 'a@b.com', code: '123456' }).success,
+    ).toBe(true);
+    expect(AuthCodeVerifySchema.safeParse({ email: 'a@b.com' }).success).toBe(false);
+    expect(AuthCodeVerifySchema.safeParse({ email: 'a@b.com', code: '' }).success).toBe(false);
+  });
+
+  it('AuthCodeVerifyResponseSchema bundles tokens with embedded reporter', () => {
+    expect(
+      AuthCodeVerifyResponseSchema.safeParse({
+        access_token: 'at',
+        refresh_token: 'rt',
+        reporter: validReporter,
+      }).success,
+    ).toBe(true);
+    expect(
+      AuthCodeVerifyResponseSchema.safeParse({ access_token: 'at', refresh_token: 'rt' }).success,
+    ).toBe(false);
+  });
+
+  it('AuthRefreshSchema + response require refresh_token', () => {
+    expect(AuthRefreshSchema.safeParse({ refresh_token: 'rt' }).success).toBe(true);
+    expect(AuthRefreshSchema.safeParse({}).success).toBe(false);
+    expect(AuthRefreshSchema.safeParse({ refresh_token: '' }).success).toBe(false);
+    expect(
+      AuthRefreshResponseSchema.safeParse({ access_token: 'at', refresh_token: 'rt' }).success,
+    ).toBe(true);
+    expect(AuthRefreshResponseSchema.safeParse({ access_token: 'at' }).success).toBe(false);
+  });
+
+  it('AuthLogoutSchema requires non-empty refresh_token', () => {
+    expect(AuthLogoutSchema.safeParse({ refresh_token: 'rt' }).success).toBe(true);
+    expect(AuthLogoutSchema.safeParse({}).success).toBe(false);
+    expect(AuthLogoutSchema.safeParse({ refresh_token: '' }).success).toBe(false);
   });
 });
