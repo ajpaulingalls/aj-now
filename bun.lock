@@ -9,6 +9,20 @@
         "typescript": "^5.7.2",
       },
     },
+    "packages/auth": {
+      "name": "@aj-now/auth",
+      "version": "0.0.0",
+      "dependencies": {
+        "jose": "^5.9.6",
+        "zod": "^3.23.8",
+      },
+      "devDependencies": {
+        "@aj-now/config": "workspace:*",
+        "@types/node": "^22.10.0",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8",
+      },
+    },
     "packages/config": {
       "name": "@aj-now/config",
       "version": "0.0.0",
@@ -40,6 +54,8 @@
     },
   },
   "packages": {
+    "@aj-now/auth": ["@aj-now/auth@workspace:packages/auth"],
+
     "@aj-now/config": ["@aj-now/config@workspace:packages/config"],
 
     "@aj-now/db": ["@aj-now/db@workspace:packages/db"],
@@ -475,6 +491,8 @@
     "isexe": ["isexe@2.0.0", "", {}, "sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw=="],
 
     "jackspeak": ["jackspeak@3.4.3", "", { "dependencies": { "@isaacs/cliui": "^8.0.2" }, "optionalDependencies": { "@pkgjs/parseargs": "^0.11.0" } }, "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw=="],
+
+    "jose": ["jose@5.10.0", "", {}, "sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg=="],
 
     "js-yaml": ["js-yaml@4.1.1", "", { "dependencies": { "argparse": "^2.0.1" }, "bin": { "js-yaml": "bin/js-yaml.js" } }, "sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA=="],
 
