@@ -1,0 +1,1 @@
+ALTER TABLE "media_assets" ADD CONSTRAINT "media_assets_client_uuid_unique" UNIQUE("client_uuid");
