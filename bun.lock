@@ -9,6 +9,19 @@
         "typescript": "^5.7.2",
       },
     },
+    "packages/api-contract": {
+      "name": "@aj-now/api-contract",
+      "version": "0.0.0",
+      "dependencies": {
+        "@aj-now/db": "workspace:*",
+        "zod": "^3.23.8",
+      },
+      "devDependencies": {
+        "@aj-now/config": "workspace:*",
+        "typescript": "^5.7.2",
+        "vitest": "^2.1.8",
+      },
+    },
     "packages/auth": {
       "name": "@aj-now/auth",
       "version": "0.0.0",
@@ -63,6 +76,8 @@
     },
   },
   "packages": {
+    "@aj-now/api-contract": ["@aj-now/api-contract@workspace:packages/api-contract"],
+
     "@aj-now/auth": ["@aj-now/auth@workspace:packages/auth"],
 
     "@aj-now/config": ["@aj-now/config@workspace:packages/config"],
