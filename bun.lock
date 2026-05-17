@@ -6,6 +6,7 @@
       "name": "aj-now",
       "devDependencies": {
         "@aj-now/config": "workspace:*",
+        "@aj-now/db": "workspace:*",
         "typescript": "^5.7.2",
       },
     },
