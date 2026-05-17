@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:16
+    ports:
+      - '${HOST_PG_PORT:-5432}:5432'
+    environment:
+      POSTGRES_USER: aj
+      POSTGRES_PASSWORD: aj
+      POSTGRES_DB: aj_now
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'aj', '-d', 'aj_now']
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 30s
+
+  rustfs:
+    image: rustfs/rustfs:1.0.0-beta.3
+    ports:
+      - '${HOST_S3_PORT:-9000}:9000'
+      - '${HOST_S3_CONSOLE_PORT:-9001}:9001'
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY:-devkey}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:-devsecret}
+      RUSTFS_CONSOLE_ENABLE: 'true'
+    volumes:
+      - rustfs_data:/data
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -sS -o /dev/null http://localhost:9000/']
+      interval: 5s
+      timeout: 3s
+      retries: 6
+      start_period: 30s
+
+volumes:
+  postgres_data:
+  rustfs_data:
