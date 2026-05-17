@@ -53,8 +53,17 @@ export const HealthzResponseSchema = z.object({
 });
 export type HealthzResponse = z.infer<typeof HealthzResponseSchema>;
 
-// .strict() rejects unknown keys so a typo like `preferreed_lang` fails loudly
-// instead of silently dropping the field. Value-level validation (preferred_lang
-// enum, array trim/max-20) is endpoint policy per decision api-wire-casing.
-export const ReporterPatchSchema = ReporterSchema.partial().strict();
+// Wire-immutable fields are omitted before .partial() so the contract documents
+// the actually-mutable surface. .strict() rejects unknown keys so a typo like
+// `preferreed_lang` fails loudly instead of silently dropping the field.
+// Value-level validation (preferred_lang enum, array trim/max-20) is endpoint
+// policy per decision api-wire-casing.
+export const ReporterPatchSchema = ReporterSchema.omit({
+  id: true,
+  email: true,
+  created_at: true,
+  updated_at: true,
+})
+  .partial()
+  .strict();
 export type ReporterPatch = z.infer<typeof ReporterPatchSchema>;

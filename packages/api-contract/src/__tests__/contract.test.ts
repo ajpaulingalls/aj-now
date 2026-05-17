@@ -166,4 +166,19 @@ describe('/v1/me and /healthz schemas', () => {
       ReporterPatchSchema.safeParse({ preferreed_lang: 'ar' }).success,
     ).toBe(false);
   });
+
+  it('ReporterPatchSchema rejects wire-immutable fields', () => {
+    const probes: Record<string, unknown> = {
+      id: '11111111-1111-1111-1111-111111111111',
+      email: 'reporter@example.com',
+      created_at: new Date('2026-01-01T00:00:00Z'),
+      updated_at: new Date('2026-01-01T00:00:00Z'),
+    };
+    for (const [field, value] of Object.entries(probes)) {
+      expect(
+        ReporterPatchSchema.safeParse({ [field]: value }).success,
+        `expected ${field} to be rejected as wire-immutable`,
+      ).toBe(false);
+    }
+  });
 });
