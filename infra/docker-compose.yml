@@ -2,7 +2,7 @@ services:
   postgres:
     image: postgres:16
     ports:
-      - '5432:5432'
+      - '${HOST_PG_PORT:-5432}:5432'
     environment:
       POSTGRES_USER: aj
       POSTGRES_PASSWORD: aj
@@ -19,8 +19,8 @@ services:
   rustfs:
     image: rustfs/rustfs:latest
     ports:
-      - '9000:9000'
-      - '9001:9001'
+      - '${HOST_S3_PORT:-9000}:9000'
+      - '${HOST_S3_CONSOLE_PORT:-9001}:9001'
     environment:
       RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY:-devkey}
       RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:-devsecret}
