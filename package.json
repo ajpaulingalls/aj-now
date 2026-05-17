@@ -15,11 +15,13 @@
     "test": "bun --filter '*' test",
     "db:migrate": "bun --filter @aj-now/db migrate",
     "db:seed": "bun run scripts/seed.ts",
-    "db:generate": "bun --filter @aj-now/db generate"
+    "db:generate": "bun --filter @aj-now/db generate",
+    "prepare": "lefthook install"
   },
   "devDependencies": {
     "@aj-now/config": "workspace:*",
     "@aj-now/db": "workspace:*",
+    "lefthook": "^2.1.6",
     "typescript": "^5.7.2"
   }
 }
